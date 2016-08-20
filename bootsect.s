@@ -4,20 +4,22 @@
 .section .text
 
 _start:
-	mov $0x0600, %ax
-	mov $0x0007, %bx
-	mov $0x0000, %cx
-	mov $0x184f, %dx
-	int $0x10  
+	mov $0xb800, %ax
+	mov %ax, %es
 
-	mov $0x1301, %ax
-	mov $0x0003, %bx
-	mov $0x0a20, %dx
 	mov $len, %cx
-	mov $msg, %bp
-	int $0x10
+	xor %si, %si
+	xor %di, %di
+print:
+	movb msg(%si), %al
+	movb $0x1f, %ah
+	mov %ax, %es:(%di)
+	inc %si
+	add $2, %di
+	loop print
 
-	hlt
+1:
+	jmp 1b
 
 msg:
 	.ascii "Hello World!"
